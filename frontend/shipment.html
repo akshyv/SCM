@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="./template/static/css/shipment.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>        
+    </head>
+    <body>
+        <style>
+            body{
+                background-image: url('https://windows10spotlight.com/wp-content/uploads/2019/12/d036fe1c3c929adfe34516b37f69047b-1024x576.jpg ');
+                background-repeat:no-repeat;
+                background-size: cover;
+            }
+        </style>
+        <div class ="dashboard-form">
+            <div class ="form-title">Create New Shipment :</div>
+            
+                <div class ="form-input">
+                    <label for="invoice-no">Shipment/Invoice No :</label>
+                    <input type="text" id ="invoice_no">
+                </div>
+                <div class ="form-input">
+                    <label for="container-no">Container No :</label>
+                    <input type="text" id ="container_no">
+                </div>
+                <div class ="form-input">
+                    <label for="shipment-description">Shipment Description :</label>
+                    <input type="text" id ="shipment_description">
+                </div>
+                <div class ="form-input">
+                    <label for="route-details">Route Details :</label>
+                    <input type="text" id ="route_details">
+                </div>
+                <div class ="form-input">
+                    <label for="goods-type">Goods Type :</label>
+                    <input type="text" id ="goods_type">
+                </div>
+                <div class ="form-input">
+                    <label for="device">Device :</label>
+                    <input type="text" id ="device">
+                </div>
+                <div class ="form-input">
+                    <label for="expected-delivery-date">Expected Delivery Date :</label>
+                    <input type="datetime-local" id ="expected_delivery_date">
+                </div>            
+                              
+            <div class ="form-input">
+                <label for="po-no">PO Number :</label>
+                <input type="text" id ="po_no">
+            </div>
+            <div class ="form-input">
+                <label for="delivery-no">Delivery Number :</label>
+                <input type="text" id ="delivery_no">
+            </div>
+            <div class ="form-input">
+                <label for="ndc-no">NDC Number :</label>
+                <input type="text" id ="ndc_no">
+            </div>
+            <div class ="form-input">
+                <label for="batch-id">Batch Id :</label>
+                <input type="number" id ="batch_id">
+            </div>
+            <div class ="form-input">
+                <label for="serial-no">Serial number of Goods :</label>
+                <input type="number" id ="serial_no">
+            </div>
+            <div class="form-input">
+                <button id="sub-btn" onclick="createShipment()">Submit Details</button>
+            </div>
+        </div>
+        <script>
+            function createShipment(){
+                let Invoice_no = document.querySelector("#invoice_no").value
+                let container_no = document.querySelector("#container_no").value
+                let shipment_description = document.querySelector("#shipment_description").value
+                let route_details = document.querySelector("#route_details").value
+                let goods_type = document.querySelector("#goods_type").value
+                let device = document.querySelector("#device").value
+                let expected_delivery_date = document.querySelector("#expected_delivery_date").value
+                let PO_number = document.querySelector("#po_no").value
+                let delivery_no = document.querySelector("#delivery_no").value
+                let NDC_no = document.querySelector("#ndc_no").value
+                let batch_id = document.querySelector("#batch_id").value
+                let Serial_no_of_goods = document.querySelector("#serial_no").value                
+
+                $.ajax({
+                url:"http://localhost:8000/add_shipment",
+                type:"POST",
+                headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
+                contentType:"application/json",
+                data:JSON.stringify({
+                    Invoice_no:Invoice_no,
+                    container_no:container_no,
+                    shipment_description:shipment_description,
+                    route_details:route_details,
+                    goods_type:goods_type,
+                    device:device,
+                    expected_delivery_date:expected_delivery_date,
+                    PO_number:PO_number,
+                    delivery_no:delivery_no,
+                    NDC_no:NDC_no,
+                    batch_id:batch_id,
+                    Serial_no_of_goods:Serial_no_of_goods,
+                }),
+                success:function(data) {
+                    window.location.href = "http://127.0.0.1:5501/home.html";
+                    return(data)
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+                })
+            }
+        </script>        
+    </body>
+</html>
