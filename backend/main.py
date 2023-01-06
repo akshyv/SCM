@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Union, Any
 from fastapi.middleware.cors import CORSMiddleware
-from models import User, Shipments
+from models import User, Shipments, Transport_data
 from mongoengine import connect
 from mongoengine.queryset.visitor import Q
 from pydantic import BaseModel, ValidationError
@@ -229,3 +229,35 @@ def add_shipment(shipment: NewShipment, token: str = Depends(oauth2_scheme)):
                              )
     new_shipment.save()
     return {"message": "shipments created"}
+
+@app.get("/deviceData")
+def get_device_data(token: str = Depends(reuseable_oauth)):
+    shipment_list = []
+    try:
+        payload = jwt.decode(
+            token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
+        )
+
+        token_data = TokenPayload(**payload)
+
+        if datetime.fromtimestamp(payload['exp']) < datetime.now():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token expired",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+    except(jwt.JWTError, ValidationError):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )      
+    TransportData = Transport_data.objects().to_json()
+    TransportData_list = json.loads(TransportData)
+    return(TransportData_list)
+
+
+
+        
+    
+    

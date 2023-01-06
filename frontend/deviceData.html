@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script></head>
+  <style>
+    table,
+    th,
+    td {
+      border: 1px solid black;
+    }
+  </style>
+  <body>
+    <!-- <h1>Item ID: {{ streaming_data }}</h1> -->
+    <h2>A basic HTML table</h2>
+    <button onclick="getTransportData()">Click here</button>
+    <script>
+      function getTransportData(){
+      $.ajax({
+      url:"http://localhost:8000/deviceData",
+      type:"GET",
+      headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
+      contentType:"application/json",
+      success: function(data){
+        console.log(data)
+        return data
+      }     
+    })   
+    }        // from mongoengine import *
+        // con=connect('newdb')
+        // class products (Document):
+        // ProductID=IntField(required=True)
+        // Name=StringField()
+        // price=IntField()
+        // for product in products.objects:
+        // print ('ID:',product.ProductID, 'Name:',product.Name, 'Price:',product.price)
+    </script>
+          <div>      
+              <table style="width: 100%">
+                <tr>
+                  <th>Battery level</th>
+                  <th>First_Sensor_temperature</th>
+                  <th>Route_From</th>
+                  <th>Route_To</th>
+                </tr>
+                {% for data in data %}
+                <tr>
+                  <td>{{data.Battery_Level}}</td>
+                  <td>{{data.First_Sensor_temperature}}</td>
+                  <td>{{data.Route_From}}</td>
+                  <td>{{data.Route_To}}</td>
+                </tr>
+                {% endfor %}
+              </table>
+          
+              <p>To understand the example better, we have added borders to the table.</p>
+            </div>
+  </body>
+</html>
