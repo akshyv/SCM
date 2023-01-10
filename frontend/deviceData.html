@@ -1,57 +1,71 @@
 <!DOCTYPE html>
 <html>
-  <head><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script></head>
-  <style>
-    table,
-    th,
-    td {
-      border: 1px solid black;
-    }
-  </style>
+  <head>
+    <link rel="stylesheet" href="./template/static/css/deviceData.css">
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <!-- <head><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script></head> -->
+
   <body>
-    <!-- <h1>Item ID: {{ streaming_data }}</h1> -->
-    <h2>A basic HTML table</h2>
-    <button onclick="getTransportData()">Click here</button>
-    <script>
-      function getTransportData(){
-      $.ajax({
-      url:"http://localhost:8000/deviceData",
-      type:"GET",
-      headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
-      contentType:"application/json",
-      success: function(data){
-        console.log(data)
-        return data
-      }     
-    })   
-    }        // from mongoengine import *
-        // con=connect('newdb')
-        // class products (Document):
-        // ProductID=IntField(required=True)
-        // Name=StringField()
-        // price=IntField()
-        // for product in products.objects:
-        // print ('ID:',product.ProductID, 'Name:',product.Name, 'Price:',product.price)
-    </script>
-          <div>      
-              <table style="width: 100%">
-                <tr>
-                  <th>Battery level</th>
-                  <th>First_Sensor_temperature</th>
-                  <th>Route_From</th>
-                  <th>Route_To</th>
-                </tr>
-                {% for data in data %}
-                <tr>
-                  <td>{{data.Battery_Level}}</td>
-                  <td>{{data.First_Sensor_temperature}}</td>
-                  <td>{{data.Route_From}}</td>
-                  <td>{{data.Route_To}}</td>
-                </tr>
-                {% endfor %}
-              </table>
-          
-              <p>To understand the example better, we have added borders to the table.</p>
-            </div>
-  </body>
+    <h2>Data from Kafka</h2>
+    <div class="button">
+    <button onclick="getTransportData()">Click here to view data</button>
+    </div>
+<div class="container">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Battery Level</th>
+        <th>Device Id</th>
+        <th>First_Sensor temperature</th>
+        <th>Route From</th>
+        <th>Route To</th>
+      </tr>
+    </thead>
+    <tbody id="data">
+    </tbody>
+  </table>
+</div>
+<script>
+  function getTransportData() {
+    var token = localStorage.getItem("access_token");
+                if(token == undefined){
+                    window.location.href = "http://127.0.0.1:5501"
+                }else{ 
+  fetch("http://localhost:8000/deviceData", {
+    method:'GET',
+    headers: {
+    Accept: 'application/json',
+    Authorization: 'Bearer ' + localStorage.getItem('access_token')}}).then(
+  res => {
+    res.json().then(
+      data => {
+        console.log(data);
+        if (data.length > 0) {
+
+          var temp = "";
+          data.forEach((itemData) => {
+            temp += "<tr>";
+            temp += "<td>" + itemData.Battery_Level + "</td>";
+            temp += "<td>" + itemData.Device_Id + "</td>";
+            temp += "<td>" + itemData.First_Sensor_temperature + "</td>";
+            temp += "<td>" + itemData.Route_From + "</td>";
+            temp += "<td>" + itemData.Route_To + "</td></tr>";
+          });
+          document.getElementById('data').innerHTML = temp;
+        }
+      }
+    )
+  }
+)
+}
+  }
+</script>
+</body>
 </html>

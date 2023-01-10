@@ -65,13 +65,12 @@
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav">
             <li><a href="#" onclick=redirect()>Add Shipment</a></li>
-            <li><a href="#">Device Data Stream</a></li>
+            <li><a href="#" onclick=redirect2()>Device Data Stream</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li>
               <a href="#" onclick="logout()"
-                ><span class="glyphicon glyphicon-log-in"></span>logout</a
-              >
+                ><span class="glyphicon glyphicon-log-in"></span>logout</a>
             </li>
           </ul>
         </div>
@@ -86,6 +85,14 @@
                     window.location.href = "http://127.0.0.1:5501/shipment.html"
                 }
             }
+        function redirect2() {
+            var token = localStorage.getItem("access_token");
+            if(token == undefined){
+                window.location.href = "http://127.0.0.1:5501"
+            }else{            
+                window.location.href = "http://127.0.0.1:5501/deviceData.html"
+            }
+        }
         function logout() {
           localStorage.removeItem("access_token")
           localStorage.removeItem("refresh_token")
