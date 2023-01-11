@@ -1,0 +1,8 @@
+create user account detail
+dont accept time in field
+implement route goods  will be dropdown and device device no will be 6 digit
+description allow only num and alpha
+create dynamic data for kafka part
+handle shipment detail 
+make shipment related to user (a created shipment should not be acceseable by b)
+implement environmental variables
