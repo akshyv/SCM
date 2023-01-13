@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <title>Home</title>
     <meta charset="utf-8" />
@@ -64,7 +65,7 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav">
-            <li><a href="#" onclick=redirect()>Add Shipment</a></li>
+            <li><a href="#" onclick="redirect()">Add Shipment</a></li>
             <li><a href="#" onclick=redirect2()>Device Data Stream</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -77,21 +78,39 @@
       </div>
     </nav>
     <script>
-        function redirect() {
-                var token = localStorage.getItem("access_token");
-                if(token == undefined){
-                    window.location.href = "http://127.0.0.1:5501"
-                }else{            
-                    window.location.href = "http://127.0.0.1:5501/shipment.html"
+      async function checkValidity(){
+        var status = false;
+        await $.ajax({
+                url:"http://localhost:8000/checkValidity",
+                type:"GET",
+                headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
+                success:function(data) {
+                  // console.log('222222222222222222222222222222',data)
+                  status = data
+                },
+                error: function(xhr, ajaxOptions, thrownError){                    
+                    status = false
+                    return status
+                    // console.log('3333333333',status) 
                 }
+        })
+        // console.log('rrrrrrrrrrrrrrrrrrrrrrrrr',status)
+        return status
+      }
+        async function redirect() {          
+                console.log("redirect trigered")
+                var token = await checkValidity().then((result)=>{
+                  window.location.href = "http://127.0.0.1:5501/shipment.html"
+                }).catch((error)=>{
+                  window.location.href = "http://127.0.0.1:5501"       
+                })
             }
-        function redirect2() {
-            var token = localStorage.getItem("access_token");
-            if(token == undefined){
-                window.location.href = "http://127.0.0.1:5501"
-            }else{            
-                window.location.href = "http://127.0.0.1:5501/deviceData.html"
-            }
+        async function redirect2() {
+          var token = await checkValidity().then((result)=>{
+                  window.location.href = "http://127.0.0.1:5501/deviceData.html"
+                }).catch((error)=>{
+                  window.location.href = "http://127.0.0.1:5501"       
+                })
         }
         function logout() {
           localStorage.removeItem("access_token")

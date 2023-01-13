@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Union, Any
 from fastapi.middleware.cors import CORSMiddleware
-from models import User, Shipments, Transport_data
+from .models import User, Shipments, Transport_data
 from mongoengine import connect
 from mongoengine.queryset.visitor import Q
 from pydantic import BaseModel, ValidationError
@@ -11,13 +11,16 @@ from passlib.context import CryptContext
 from datetime import timedelta, datetime,  date
 from jose import jwt
 import json
+# from models import User, Shipments, Transport_data
 
 app = FastAPI()
 connect(db="SCM", host="localhost", port=27017)
 origins = [
     "http://localhost:8080",
     "http://127.0.0.1:5501",
-    "http://localhost:5501"
+    "http://localhost:5501",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
 
 app.add_middleware(
@@ -43,7 +46,7 @@ class NewShipment(BaseModel):
     route_details: str
     goods_type: str
     device: str
-    expected_delivery_date: datetime
+    expected_delivery_date: date
     PO_number: str
     delivery_no: int
     NDC_no: int
@@ -160,31 +163,31 @@ reuseable_oauth = OAuth2PasswordBearer(
 )
 
 
-@app.get("/user")
-def get_current_user(token: str = Depends(reuseable_oauth)):
-    try:
-        payload = jwt.decode(
-            token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
-        )
+# @app.get("/user")
+# def get_current_user(token: str = Depends(reuseable_oauth)):
+#     try:
+#         payload = jwt.decode(
+#             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
+#         )
 
-        token_data = TokenPayload(**payload)
+#         token_data = TokenPayload(**payload)
 
-        if datetime.fromtimestamp(payload['exp']) < datetime.now():
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-    except(jwt.JWTError, ValidationError):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    user: Union[dict[str, Any], None] = User.objects.filter(
-        Q(username=token_data.sub))[0].to_json()
+#         if datetime.fromtimestamp(payload['exp']) < datetime.now():
+#             raise HTTPException(
+#                 status_code=status.HTTP_401_UNAUTHORIZED,
+#                 detail="Token expired",
+#                 headers={"WWW-Authenticate": "Bearer"},
+#             )
+#     except(jwt.JWTError, ValidationError):
+#         raise HTTPException(
+#             status_code=status.HTTP_403_FORBIDDEN,
+#             detail="Could not validate credentials",
+#             headers={"WWW-Authenticate": "Bearer"},
+#         )
+#     user: Union[dict[str, Any], None] = User.objects.filter(
+#         Q(username=token_data.sub))[0].to_json()
 
-    return user
+#     return user
 
 
 # print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', get_current_user(
@@ -255,6 +258,31 @@ def get_device_data(token: str = Depends(reuseable_oauth)):
     TransportData = Transport_data.objects().to_json()
     TransportData_list = json.loads(TransportData)
     return(TransportData_list)
+
+@app.get("/checkValidity")
+def validityCheck(token: str = Depends(reuseable_oauth)):
+    shipment_list = []
+    try:
+        payload = jwt.decode(
+            token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
+        )
+
+        token_data = TokenPayload(**payload)
+
+        if datetime.fromtimestamp(payload['exp']) < datetime.now():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token expired",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+    except(jwt.JWTError, ValidationError):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return True  
+    
 
 
 

@@ -26,8 +26,8 @@ formBody = formBody.join("&");
         window.location.href = "home.html"       
     },
     error: function (xhr, ajaxOptions, thrownError) {
-        alert(xhr.status);
-        alert(thrownError);
+        alert("Username or Password mismatched");
+        // alert(thrownError);
     }
     });
 }

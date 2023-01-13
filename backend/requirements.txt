@@ -1,0 +1,13 @@
+pathlib  
+mongoengine
+kafka
+pydantic 
+sockets
+fastapi 
+typing
+passlib
+datetime
+python-jose
+python-time
+uvicorn
+python-multipart

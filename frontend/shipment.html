@@ -41,7 +41,7 @@
                 </div>
                 <div class ="form-input">
                     <label for="expected-delivery-date">Expected Delivery Date :</label>
-                    <input type="datetime-local" id ="expected_delivery_date">
+                    <input type="date" id ="expected_delivery_date">
                 </div>            
                               
             <div class ="form-input">
@@ -72,12 +72,26 @@
             function createShipment(){
                 let Invoice_no = document.querySelector("#invoice_no").value
                 let container_no = document.querySelector("#container_no").value
-                let shipment_description = document.querySelector("#shipment_description").value
+                let shipmentDescription = document.querySelector("#shipment_description").value
+                let description_pattern = "[A-Za-z0-9? ,_-]+$"
+                if (description_pattern.test(shipmentDescription)){
+                    let shipment_description = shipmentDescription
+                } else {
+                    shipment_description = ''
+                    alert ("no special character in shipment Description")
+                }
                 let route_details = document.querySelector("#route_details").value
                 let goods_type = document.querySelector("#goods_type").value
                 let device = document.querySelector("#device").value
                 let expected_delivery_date = document.querySelector("#expected_delivery_date").value
-                let PO_number = document.querySelector("#po_no").value
+                let PONumber = document.querySelector("#po_no").value
+                if (len(str(PONumber)) == 6){
+                    let PO_number = PONumber
+                }
+                else {
+                    PO_number = null
+                    alert("Type Six digit for the po_number")
+                }
                 let delivery_no = document.querySelector("#delivery_no").value
                 let NDC_no = document.querySelector("#ndc_no").value
                 let batch_id = document.querySelector("#batch_id").value
@@ -109,6 +123,7 @@
                 error: function(xhr, ajaxOptions, thrownError){
                     alert(xhr.status);
                     alert(thrownError);
+                    alert("fill all details")
                 }
                 })
             }

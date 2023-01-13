@@ -13,7 +13,7 @@
                 </div>
                     <div class ="form-input">
                     <label for="password">Password</label>
-                    <input type="text" id ="typePasswordX" placeholder="Password" required>
+                    <input type="password" id ="typePasswordX" placeholder="Password" required>
                 </div>
                 <div class="form-input">
                     <button id="login-btn" onclick="signUpData()">Sign Up</button>                    
@@ -24,7 +24,9 @@
       function signUpData(){
         let userName = document.querySelector("#typeUserName").value
         let passWord = document.querySelector("#typePasswordX").value
-        $.ajax({
+        var re = new RegExp("(?=^.{8,}$)((?=.*\d)|(?=.*))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$");
+        if (re.test(passWord)) {
+          $.ajax({
           url:"http://localhost:8000/sign_up",
           type:"POST",
           contentType:"application/json",
@@ -35,9 +37,15 @@
           success:function(data) {
             window.location.href = "http://127.0.0.1:5501";
             return(data)
+          },
+          error: function(xhr, ajaxOptions, thrownError){
+            alert ("User with this name already exist")
           }
-        })
-      }
+        })            
+        } else {
+          alert("Invalid Pattern for password")
+        }
+    }
     </script>
   </body>
 </html>

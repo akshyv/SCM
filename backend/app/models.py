@@ -1,9 +1,9 @@
 from mongoengine import Document, StringField, IntField, DateField, DynamicDocument
 
-class Employee(Document):
-    name = StringField(max_length=100)
-    email = StringField()
-    emp_id = IntField()
+# class Employee(Document):
+#     name = StringField(max_length=100)
+#     email = StringField()
+#     emp_id = IntField()
     
 class User(Document):
     username = StringField(max_length=100)
