@@ -41,28 +41,46 @@
 # CMD ["uvicorn","app.main:app","--proxy-headers", "--host","0.0.0.0", "--port","8000"]
 
 
-FROM python
+# FROM python:3.9.0-alpine
 
 
 
-WORKDIR /main
+# WORKDIR /main
 
 
 
-COPY ./requirements.txt /main/requirements.txt  
+# COPY ./requirements.txt /main/requirements.txt  
 
 
 
-RUN pip install --no-cache-dir --upgrade -r /main/requirements.txt
+# RUN pip install --no-cache-dir --upgrade -r /main/requirements.txt
 
 
 
-COPY ./app /main/app
+# COPY ./app /main/app
 
 
+
+# EXPOSE 8000
+
+
+# CMD ["uvicorn","app.main:app","--proxy-headers", "--reload", "--host","127.0.0.1", "--port","8000"]
+
+# uvicorn main:app --reload --host 0.0.0.0
+
+
+FROM python:3-slim-buster
+
+RUN mkdir /code
+
+WORKDIR /code
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY . .
 
 EXPOSE 8000
 
-
-
-CMD ["uvicorn","app.main:app","--proxy-headers", "--host","0.0.0.0", "--port","8000"]
+CMD ["uvicorn", "app.main:app","--proxy-headers", "--reload", "--host", "0.0.0.0", "--port", "8000"]

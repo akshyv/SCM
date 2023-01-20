@@ -110,7 +110,7 @@ services:
    image: dc7c96ad7b7b
    command: uvicorn app.main:app --host 127.0.0.1 --ssl-keyfile=./key.pem --ssl-certfile=./cert.pem
    ports:
-      - "8011:8010"
+      - "8000:8000"
    networks:
       - connect
    depends_on:

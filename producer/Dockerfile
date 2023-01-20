@@ -1,7 +1,5 @@
 FROM python:3.8.8
 
-RUN pip install kafka-python
-
 COPY . /test/producer
 
 WORKDIR /test/producer
