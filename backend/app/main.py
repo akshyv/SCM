@@ -1,19 +1,21 @@
 from fastapi import FastAPI, Path, HTTPException, Query, Depends, status
-from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Union, Any
 from fastapi.middleware.cors import CORSMiddleware
-from .models import User, Shipments, Transport_data
+from mongoengine import Document, StringField, IntField, DateField, DynamicDocument
 from mongoengine import connect
 from mongoengine.queryset.visitor import Q
 from pydantic import BaseModel, ValidationError
 from passlib.context import CryptContext
 from datetime import timedelta, datetime,  date
 from jose import jwt
-from .config import setting
-from .models import User, Shipments, Transport_data
 import json
-# from models import User, Shipments, Transport_data
+import os
+from dotenv import load_dotenv
+import ssl
+
+
+load_dotenv()
 
 app = FastAPI()
 connect(db="SCM", host="localhost", port=27017)
@@ -23,6 +25,9 @@ origins = [
     "http://localhost:5501",
     "http://localhost:8080",
     "http://127.0.0.1:8080",
+    "http://localhost:8081",
+    "http://127.0.0.1:8081",
+    "http://0.0.0.0:8000"
 ]
 
 app.add_middleware(
@@ -33,6 +38,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+class User(Document):
+    username = StringField(max_length=100)
+    password = StringField()
+    
+class Shipments(Document):
+    user_name = StringField()
+    Invoice_no = IntField()
+    container_no = IntField()
+    shipment_description = StringField()
+    route_details = StringField()
+    goods_type = StringField()
+    device = StringField()
+    expected_delivery_date = DateField()
+    PO_number = StringField()
+    delivery_no = IntField()
+    NDC_no = IntField()
+    batch_id = IntField()
+    Serial_no_of_goods = IntField()
+    
+    
+class Transport_data(DynamicDocument):
+    Battery_Level = IntField()
+    Device_Id = IntField()
+    First_Sensor_temperature = IntField()
+    Route_From = StringField()
+    Route_To = StringField()
+    
+        
 
 class NewUser(BaseModel):
     username: str
@@ -78,6 +112,7 @@ def verify_password(password, hashed_pass):
     return pwd_context.verify(password, hashed_pass)
 
 
+
 @app.post("/sign_up", status_code=201)
 def sign_up(new_user: NewUser):
     existing_user = json.loads(User.objects.filter(
@@ -106,19 +141,17 @@ def authenticate_user(username, password):
     except User.DoesNotExist:
         return False
 
-
-ACCESS_TOKEN_EXPIRE_MINUTES = setting.ACCESS_TOKEN_EXPIRE_MINUTES  # 30 minutes
-REFRESH_TOKEN_EXPIRE_MINUTES = setting.REFRESH_TOKEN_EXPIRE_MINUTES  # 7 days
-ALGORITHM = setting.ALGORITHM
-JWT_SECRET_KEY = setting.JWT_SECRET_KEY
-JWT_REFRESH_SECRET_KEY = setting.JWT_REFRESH_SECRET_KEY
-
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')  # 30 minutes
+REFRESH_TOKEN_EXPIRE_MINUTES = os.getenv('REFRESH_TOKEN_EXPIRE_MINUTES')  # 7 days
+ALGORITHM = os.getenv('ALGORITHM')
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+JWT_REFRESH_SECRET_KEY = os.getenv('JWT_REFRESH_SECRET_KEY')
 
 def create_access_token(subject: Union[str, Any], expires_delta: int = None) -> str:
     if expires_delta is not None:
         expires_delta = datetime.utcnow() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta = datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, ALGORITHM)
     return encoded_jwt
@@ -128,7 +161,7 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: int = None) ->
     if expires_delta is not None:
         expires_delta = datetime.utcnow() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+        expires_delta = datetime.utcnow() + timedelta(minutes=int(REFRESH_TOKEN_EXPIRE_MINUTES))
 
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, JWT_REFRESH_SECRET_KEY, ALGORITHM)
@@ -224,7 +257,6 @@ def add_shipment(shipment: NewShipment, token: str = Depends(oauth2_scheme)):
         )
         
     user = get_current_user(token),
-    # print('llllllllllllllllllllll', user[0])
 
     new_shipment = Shipments(user_name=user[0],
                              Invoice_no=shipment.Invoice_no,

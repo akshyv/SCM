@@ -1,0 +1,8 @@
+pathlib  
+kafka
+pydantic 
+sockets
+passlib
+python-jose
+python-time
+mongoengine

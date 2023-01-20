@@ -1,0 +1,4 @@
+kafka
+sockets
+python-jose
+python-time

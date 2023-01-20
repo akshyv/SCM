@@ -2,9 +2,10 @@ import json
 from pathlib import Path
 from mongoengine import connect
 from kafka import KafkaConsumer
-from models import Transport_data
 from pydantic import BaseModel
 import sys
+sys.path.append('C:\SCM\backend\app')
+import models
 
 base_dir = Path(__file__).resolve().parent
 
@@ -36,7 +37,7 @@ try:
     consumer = KafkaConsumer(topicName,bootstrap_servers = bootstrap_servers,auto_offset_reset = 'earliest')
     for data in consumer:
         data = json.loads(data.value)
-        Transport_Data = Transport_data(
+        Transport_Data = models.Transport_data(
             Battery_Level = data['Battery_Level'],
             Device_Id = data['Device_Id'],
             First_Sensor_temperature = data['First_Sensor_temperature'],
@@ -48,4 +49,3 @@ try:
         print(Transport_Data)
 except KeyboardInterrupt:
     sys.exit()
-    

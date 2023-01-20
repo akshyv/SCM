@@ -7,7 +7,8 @@ fastapi
 typing
 passlib
 datetime
-python-jose
-python-time
 uvicorn
 python-multipart
+python-dotenv
+python-jose
+python-time

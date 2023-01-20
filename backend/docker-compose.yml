@@ -1,0 +1,169 @@
+# version: '3.8'
+# services:
+#   app:
+#     build: .
+#     ports:
+#       - "8111:8080"
+#     networks:
+#         - connect
+#     depends_on:
+#       - db
+#   db:
+#     image: mongo
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - ./data:/data/db
+
+#   front:
+#     image: nginx
+#     ports:
+#         - 8000:80
+#     volumes:
+#         - ./src:/usr/share/nginx/html
+
+#     healthcheck:
+#         test: curl --fail http://localhost || exit 1
+#         interval: 60s
+#         retries: 5
+#         start_period: 20s
+#         timeout: 10s
+  
+# networks:
+#   connect:
+#    driver: bridge
+
+
+
+
+# # version: '3.8'
+
+# # services:
+# #   web:
+# #     build: .
+# #     command: uvicorn app.main:app --host 127.0.0.1 
+# #     ports:
+# #       - 8008:8081
+
+
+# #   app:
+# #     build: .
+# #     ports:
+# #       - 8000:8000
+
+# #   socket:
+# #     build: serverfile
+# #     ports:
+# #       - 12345:12345
+
+# #   zookeeper:
+# #     image: docker.io/bitnami/zookeeper:3.8
+# #     ports:
+# #       - 2181:2181
+# #     environment:
+# #       - ALLOW_ANONYMOUS_LOGIN=yes
+
+# #   kafka:
+# #     image: docker.io/bitnami/kafka:3.2
+# #     ports:
+# #       - 9092:9092
+# #     environment:
+# #       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+# #       - ALLOW_PLAINTEXT_LISTENER=yes
+# #     healthcheck:
+# #       test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --list"]
+# #       interval: 30s
+# #       timeout: 30s
+# #       retries: 3
+# #       start_period: 30s
+# #     depends_on:
+# #       - zookeeper
+
+# #   producer:
+# #     build: producerfile
+# #     depends_on:
+# #       kafka:
+# #         condition: service_healthy
+
+
+# #   consumer:
+# #     build: consumerfile   
+# #     depends_on:
+# #       kafka:
+# #         condition: service_healthy
+
+
+
+version: "3"
+services:
+  frontend-application:
+      image: c7a322644662      
+      ports:
+        - "8081:8080"
+      restart: always
+      networks:
+        - connect
+      depends_on:
+        - backend-application
+
+  backend-application:
+   image: dc7c96ad7b7b
+   command: uvicorn app.main:app --host 127.0.0.1 --ssl-keyfile=./key.pem --ssl-certfile=./cert.pem
+   ports:
+      - "8011:8010"
+   networks:
+      - connect
+   depends_on:
+      - db
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.8
+    ports:
+      - 2181:2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: docker.io/bitnami/kafka:3.2
+    ports:
+      - 9092:9092
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --list"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - zookeeper
+
+ 
+
+  sockets:
+    image: 1f1b6d766b30
+    ports:
+      - 12345:12345
+
+  producer:
+
+    image: 5df578888ce0
+    depends_on:
+      - kafka
+
+  consumer:
+
+    image: c5a9b9feb946
+    depends_on:
+      - kafka 
+
+networks:
+  connect:
+   driver: bridge
