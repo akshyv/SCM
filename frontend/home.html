@@ -65,8 +65,8 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav">
-            <li><a href="#" onclick="redirect()">Add Shipment</a></li>
-            <li><a href="#" onclick=redirect2()>Device Data Stream</a></li>
+            <li><a href="#" onclick="shipment_redirect()">Add Shipment</a></li>
+            <li><a href="#" onclick=data_redirect()>Device Data Stream</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li>
@@ -85,19 +85,16 @@
                 type:"GET",
                 headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
                 success:function(data) {
-                  // console.log('222222222222222222222222222222',data)
                   status = data
                 },
                 error: function(xhr, ajaxOptions, thrownError){                    
                     status = false
                     return status
-                    // console.log('3333333333',status) 
                 }
         })
-        // console.log('rrrrrrrrrrrrrrrrrrrrrrrrr',status)
         return status
       }
-        async function redirect() {          
+        async function shipment_redirect() {          
                 console.log("redirect trigered")
                 var token = await checkValidity().then((result)=>{
                   window.location.href = "http://127.0.0.1:5501/shipment.html"
@@ -105,7 +102,7 @@
                   window.location.href = "http://127.0.0.1:5501"       
                 })
             }
-        async function redirect2() {
+        async function data_redirect() {
           var token = await checkValidity().then((result)=>{
                   window.location.href = "http://127.0.0.1:5501/deviceData.html"
                 }).catch((error)=>{

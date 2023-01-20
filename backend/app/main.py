@@ -10,6 +10,8 @@ from pydantic import BaseModel, ValidationError
 from passlib.context import CryptContext
 from datetime import timedelta, datetime,  date
 from jose import jwt
+from .config import setting
+from .models import User, Shipments, Transport_data
 import json
 # from models import User, Shipments, Transport_data
 
@@ -40,6 +42,7 @@ class NewUser(BaseModel):
 
 
 class NewShipment(BaseModel):
+    user_name:str
     Invoice_no: int
     container_no: int
     shipment_description: str
@@ -104,11 +107,11 @@ def authenticate_user(username, password):
         return False
 
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
-REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
-ALGORITHM = "HS256"
-JWT_SECRET_KEY = "2fcb3d895799b8d8fe953b184d3c757d21c60514db6c62455f816939a2ff8703"
-JWT_REFRESH_SECRET_KEY = "2fcb3d895799b8d8fe953b184d3c757d21c60514db6c62455f816939a2ff8703"
+ACCESS_TOKEN_EXPIRE_MINUTES = setting.ACCESS_TOKEN_EXPIRE_MINUTES  # 30 minutes
+REFRESH_TOKEN_EXPIRE_MINUTES = setting.REFRESH_TOKEN_EXPIRE_MINUTES  # 7 days
+ALGORITHM = setting.ALGORITHM
+JWT_SECRET_KEY = setting.JWT_SECRET_KEY
+JWT_REFRESH_SECRET_KEY = setting.JWT_REFRESH_SECRET_KEY
 
 
 def create_access_token(subject: Union[str, Any], expires_delta: int = None) -> str:
@@ -162,32 +165,35 @@ reuseable_oauth = OAuth2PasswordBearer(
     scheme_name="JWT"
 )
 
+def get_current_user(token: str = Depends(reuseable_oauth)):
+    try:
+        payload = jwt.decode(
+            token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
+        )
 
-# @app.get("/user")
-# def get_current_user(token: str = Depends(reuseable_oauth)):
-#     try:
-#         payload = jwt.decode(
-#             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
-#         )
+        token_data = TokenPayload(**payload)
 
-#         token_data = TokenPayload(**payload)
+        if datetime.fromtimestamp(payload['exp']) < datetime.now():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token expired",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+    except(jwt.JWTError, ValidationError):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    user: Union[dict[str, Any], None] = json.loads(User.objects.filter(
+        Q(username=token_data.sub))[0].to_json())["username"]
+    return str(user)
 
-#         if datetime.fromtimestamp(payload['exp']) < datetime.now():
-#             raise HTTPException(
-#                 status_code=status.HTTP_401_UNAUTHORIZED,
-#                 detail="Token expired",
-#                 headers={"WWW-Authenticate": "Bearer"},
-#             )
-#     except(jwt.JWTError, ValidationError):
-#         raise HTTPException(
-#             status_code=status.HTTP_403_FORBIDDEN,
-#             detail="Could not validate credentials",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     user: Union[dict[str, Any], None] = User.objects.filter(
-#         Q(username=token_data.sub))[0].to_json()
 
-#     return user
+@app.get("/user")
+def get_user(token: str = Depends(reuseable_oauth)):
+    user = get_current_user(token) 
+    return user   
 
 
 # print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', get_current_user(
@@ -216,8 +222,12 @@ def add_shipment(shipment: NewShipment, token: str = Depends(oauth2_scheme)):
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+        
+    user = get_current_user(token),
+    # print('llllllllllllllllllllll', user[0])
 
-    new_shipment = Shipments(Invoice_no=shipment.Invoice_no,
+    new_shipment = Shipments(user_name=user[0],
+                             Invoice_no=shipment.Invoice_no,
                              container_no=shipment.container_no,
                              shipment_description=shipment.shipment_description,
                              route_details=shipment.route_details,

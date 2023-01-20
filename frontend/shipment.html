@@ -69,13 +69,14 @@
             </div>
         </div>
         <script>
-            function createShipment(){
+            async function createShipment(){
+                let user_name = ""
                 let Invoice_no = document.querySelector("#invoice_no").value
                 let container_no = document.querySelector("#container_no").value
-                let shipmentDescription = document.querySelector("#shipment_description").value
-                let description_pattern = "[A-Za-z0-9? ,_-]+$"
+                let shipmentDescription = document.querySelector("#shipment_description").value                
+                let description_pattern = new RegExp("[A-Za-z0-9? ,_-]+$")
                 if (description_pattern.test(shipmentDescription)){
-                    let shipment_description = shipmentDescription
+                    var shipment_description = await shipmentDescription
                 } else {
                     shipment_description = ''
                     alert ("no special character in shipment Description")
@@ -85,8 +86,9 @@
                 let device = document.querySelector("#device").value
                 let expected_delivery_date = document.querySelector("#expected_delivery_date").value
                 let PONumber = document.querySelector("#po_no").value
-                if (len(str(PONumber)) == 6){
-                    let PO_number = PONumber
+                if (PONumber.toString().length == 6){
+                    console.log("ulululululululululul",PONumber)
+                    var PO_number = await PONumber
                 }
                 else {
                     PO_number = null
@@ -103,6 +105,7 @@
                 headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
                 contentType:"application/json",
                 data:JSON.stringify({
+                    user_name:user_name,
                     Invoice_no:Invoice_no,
                     container_no:container_no,
                     shipment_description:shipment_description,

@@ -10,6 +10,7 @@ class User(Document):
     password = StringField()
     
 class Shipments(Document):
+    user_name = StringField()
     Invoice_no = IntField()
     container_no = IntField()
     shipment_description = StringField()
