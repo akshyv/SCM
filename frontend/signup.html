@@ -27,6 +27,7 @@
         var re = new RegExp("(?=^.{8,}$)((?=.*\d)|(?=.*))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$");
         if (re.test(passWord)) {
           $.ajax({
+          // url:"http://backend-backend-application-1:8000/sign_up",
           url:"http://localhost:8000/sign_up",
           type:"POST",
           contentType:"application/json",
@@ -35,6 +36,7 @@
             password:passWord
           }),
           success:function(data) {
+            // window.location.href = "http://backend-frontend-application-1:5501";
             window.location.href = "http://127.0.0.1:5501";
             return(data)
           },

@@ -37,8 +37,10 @@
     x.style.display = 'none';
     var token = localStorage.getItem("access_token");
                 if(token == undefined){
+                    // window.location.href = "http:///backend-frontend-application-1:5501"
                     window.location.href = "http://127.0.0.1:5501"
                 }else{ 
+  // fetch("http://backend-backend-application-1:8000/deviceData", {
   fetch("http://localhost:8000/deviceData", {
     method:'GET',
     headers: {

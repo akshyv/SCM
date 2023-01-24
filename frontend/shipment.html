@@ -100,6 +100,7 @@
                 let Serial_no_of_goods = document.querySelector("#serial_no").value                
 
                 $.ajax({
+                // url:"http://backend-backend-application-1:8000/add_shipment",
                 url:"http://localhost:8000/add_shipment",
                 type:"POST",
                 headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
@@ -120,7 +121,8 @@
                     Serial_no_of_goods:Serial_no_of_goods,
                 }),
                 success:function(data) {
-                    window.location.href = "http://127.0.0.1:5501/home.html";
+                    // window.location.href = "http://backend-frontend-application-1:5501/home.html";
+                    window.location.href = "http://localhost:5501/home.html";
                     return(data)
                 },
                 error: function(xhr, ajaxOptions, thrownError){
