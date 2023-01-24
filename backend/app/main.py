@@ -18,7 +18,8 @@ import ssl
 load_dotenv()
 
 app = FastAPI()
-connect(db="SCM", host="localhost", port=27017)
+# connect(db="SCM", host="localhost", port=27017)
+connect(db="SCM", alias="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
 origins = [
     "http://localhost:8080",
     "http://127.0.0.1:5501",
@@ -28,6 +29,11 @@ origins = [
     "http://localhost:8081",
     "http://127.0.0.1:8081",
     "http://0.0.0.0:8000",
+    "http://0.0.0.0:27017",
+    "http://localhost:27017",
+    "http://127.0.0.1:27017", 
+    "http://backend-frontend-application-1:5501"
+    
 ]
 
 app.add_middleware(

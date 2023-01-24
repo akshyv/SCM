@@ -13,8 +13,9 @@ base_dir = Path(__file__).resolve().parent
 # db = client.test
 
 connect(db="SCM", host="localhost", port=27017)
-# bootstrap_servers = "kafka"
-bootstrap_servers = 'localhost:9092'
+# connect(db="SCM", alias="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
+bootstrap_servers = "backend-kafka-1"
+# bootstrap_servers = 'localhost:9092'
 topicName = 'transport_data'
 
 class TransportData(BaseModel):
@@ -23,15 +24,6 @@ class TransportData(BaseModel):
         First_Sensor_temperature: int
         Route_From: str
         Route_To: str
-
-
-# client = pymongo.MongoClient("mongodb://localhost:27017/")
-# 1client = pymongo.MongoClient("db")  # for docker local
-#client = pymongo.MongoClient(os.getenv("mongouri"))  # mongo atlas
-# mydb = client_priyanka["user"]
-# mycoll = mydb["mycol"]
-
-
 
 try:
     consumer = KafkaConsumer(topicName,bootstrap_servers = bootstrap_servers,auto_offset_reset = 'earliest')
