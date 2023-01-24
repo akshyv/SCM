@@ -16,8 +16,8 @@ formBody.push(encodedKey + "=" + encodedValue);
 formBody = formBody.join("&");
 
     $.ajax({
-   // url: "http://backend-backend-application-1:8000/login",
-   url: "http://localhost:8000/login",
+   url: "http://backend-backend-1:8000/login",
+  //  url: "http://localhost:8000/login",
     type:"POST",
     dataType: "json", 
     data: formBody,

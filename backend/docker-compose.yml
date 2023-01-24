@@ -1,37 +1,36 @@
 version: "3"
 services:
-  frontend-application:
-      image: ef34962ef539
-      ports:
-        - "5501:80"
+  # frontend:
+  #     image: 35330011f93b
+  #     ports:
+  #       - "5501:80"
+  #     networks:
+  #     - connect
+  #     depends_on:
+  #       - backend
 
-      depends_on:
-        - backend-application
+  # backend:
+  #  image: 18c09a1326dd
 
-  backend-application:
-   image: 0f386e286269
-   #command: uvicorn app.main:app --host 127.0.0.1
-   ports:
-      - "8000:8000"
-   networks:
-      - connect
-   depends_on:
-      - db
-  db:
-    image: mongo
+  #  #command: uvicorn app.main:app --host 127.0.0.1
+  #  ports:
+  #     - "8000:8000"
+  #  networks:
+  #     - connect
+   
+ server:
+    image: 1f1b6d766b30
     ports:
-      - "27017:27017"
-  #   volumes:
-  #     - ./data:/data/db
-    
-  zookeeper:
+      - 12345:12345
+
+ zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
     ports:
       - 2181:2181
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
 
-  kafka:
+ kafka:
     image: docker.io/bitnami/kafka:3.2
     ports:
       - 9092:9092
@@ -46,21 +45,17 @@ services:
       start_period: 30s
     depends_on:
       - zookeeper
-  server:
-    image: 1f1b6d766b30
-    ports:
-      - 12345:12345
 
-  producerfile:
-    image: 0177d2bde09d
+ producer:
+    image: 5ef4231d0d49
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
-  consumerfile:
-    image: 65ab7d32db9e
+
+ consumer:
+    image: ba9acb0a090e  
     depends_on:
-      - kafka 
-
-networks:
-  connect:
-   driver: bridge
+      kafka:
+        condition: service_healthy
+    

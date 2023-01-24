@@ -12,9 +12,9 @@ base_dir = Path(__file__).resolve().parent
 # client_priyanka = pymongo.MongoClient(mongo_uri)
 # db = client.test
 
-connect(db="SCM", host="localhost", port=27017)
-# connect(db="SCM", alias="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
-bootstrap_servers = "backend-kafka-1"
+# connect(db="SCM", host="localhost", port=27017)
+connect(db="SCM", host="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
+bootstrap_servers = "backend-kafka-1:9092"
 # bootstrap_servers = 'localhost:9092'
 topicName = 'transport_data'
 

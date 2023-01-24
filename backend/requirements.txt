@@ -12,3 +12,4 @@ python-multipart
 python-dotenv
 python-jose
 python-time
+bcrypt
