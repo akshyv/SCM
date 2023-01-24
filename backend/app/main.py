@@ -32,6 +32,9 @@ origins = [
     "http://0.0.0.0:27017",
     "http://localhost:27017",
     "http://127.0.0.1:27017", 
+    "http://backend-backend-1:8000",
+    "http://backend-frontend-1:5501",
+    "*"
     
     
 ]

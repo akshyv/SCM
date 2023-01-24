@@ -87,7 +87,6 @@
                 let expected_delivery_date = document.querySelector("#expected_delivery_date").value
                 let PONumber = document.querySelector("#po_no").value
                 if (PONumber.toString().length == 6){
-                    // console.log("ulululululululululul",PONumber)
                     var PO_number = await PONumber
                 }
                 else {
@@ -100,8 +99,8 @@
                 let Serial_no_of_goods = document.querySelector("#serial_no").value                
 
                 $.ajax({
-                 url:"http://backend-backend-1:8000/add_shipment",
-                //url:"http://localhost:8000/add_shipment",
+                 //url:"http://backend-backend-1:8000/add_shipment",
+                url:"http://localhost:8000/add_shipment",
                 type:"POST",
                 headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
                 contentType:"application/json",
@@ -121,8 +120,8 @@
                     Serial_no_of_goods:Serial_no_of_goods,
                 }),
                 success:function(data) {
-                   window.location.href = "http://backend-frontend-1:5501/home.html";
-                    // window.location.href = "http://localhost:5501/home.html";
+                  // window.location.href = "http://backend-frontend-1:5501/home.html";
+                     window.location.href = "http://localhost:5501/home.html";
                     return(data)
                 },
                 error: function(xhr, ajaxOptions, thrownError){

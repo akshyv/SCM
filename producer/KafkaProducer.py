@@ -5,11 +5,13 @@ import json
 
 socket_connection = socket.socket() 
 # HOST = "127.0.0.1"
-HOST = "backend-server-1"
+# HOST = "backend-server-1"
+HOST = "root-server-1"
 PORT = 12345               
 socket_connection.connect((HOST,PORT))
 # bootstrap_servers = 'localhost:9092'
-bootstrap_servers = "backend-kafka-1:9092"
+# bootstrap_servers = "backend-kafka-1:9092"
+bootstrap_servers = "root-kafka-1:9092"
 topicName = 'transport_data'
 producer = KafkaProducer(bootstrap_servers = bootstrap_servers, retries = 5,value_serializer=lambda m: json.dumps(m).encode('utf-8'))
   

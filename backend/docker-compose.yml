@@ -1,22 +1,20 @@
 version: "3"
 services:
-  # frontend:
-  #     image: 35330011f93b
-  #     ports:
-  #       - "5501:80"
-  #     networks:
-  #     - connect
-  #     depends_on:
-  #       - backend
+ frontend:
+    image: acbaab68e34e
+    ports:
+      - "5501:80"
+    networks:
+    - connect
+    depends_on:
+      - backend
 
-  # backend:
-  #  image: 18c09a1326dd
-
-  #  #command: uvicorn app.main:app --host 127.0.0.1
-  #  ports:
-  #     - "8000:8000"
-  #  networks:
-  #     - connect
+ backend:
+   image: aa92b5fd6614
+   ports:
+      - "8000:8000"
+   networks:
+      - connect
    
  server:
     image: 1f1b6d766b30
@@ -58,4 +56,7 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-    
+
+networks:
+  connect:
+    driver: bridge    
