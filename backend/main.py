@@ -13,7 +13,8 @@ from jose import jwt
 import json
 
 app = FastAPI()
-connect(db="SCM", host="localhost", port=27017)
+# connect(db="SCM", host="localhost", port=27017)
+connect(db="SCM", host="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
 origins = [
     "http://localhost:8080",
     "http://127.0.0.1:5501",
