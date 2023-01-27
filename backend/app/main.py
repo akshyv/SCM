@@ -2,6 +2,8 @@ from fastapi import FastAPI, Path, HTTPException, Query, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Union, Any
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from mongoengine import Document, StringField, IntField, DateField, DynamicDocument
 from mongoengine import connect
 from mongoengine.queryset.visitor import Q
@@ -19,29 +21,13 @@ load_dotenv()
 
 app = FastAPI()
 # connect(db="SCM", host="localhost", port=27017)
-connect(db="SCM", host="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
-origins = [
-    "http://localhost:8080",
-    "http://127.0.0.1:5501",
-    "http://localhost:5501",
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "http://localhost:8081",
-    "http://127.0.0.1:8081",
-    "http://0.0.0.0:8000",
-    "http://0.0.0.0:27017",
-    "http://localhost:27017",
-    "http://127.0.0.1:27017", 
-    "http://backend-backend-1:8000",
-    "http://backend-frontend-1:5501",
-    "*"
-    
-    
-]
+client = connect(db="SCM", host="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
+print("jhjghjgughjghjb", client)
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -121,6 +107,9 @@ def verify_password(password, hashed_pass):
     return pwd_context.verify(password, hashed_pass)
 
 
+@app.post("/hello", status_code=200)
+def hello(new_user: str = "default"):
+    return new_user
 
 @app.post("/sign_up", status_code=201)
 def sign_up(new_user: NewUser):
@@ -132,7 +121,7 @@ def sign_up(new_user: NewUser):
                     password=get_password_hash(new_user.password))
 
         user.save()
-        return{"message": "created new user"}
+        return "User Created"
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail="User with this email already exist"        

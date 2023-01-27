@@ -16,8 +16,13 @@ formBody.push(encodedKey + "=" + encodedValue);
 formBody = formBody.join("&");
 
     $.ajax({
-  //  url: "http://backend-backend-1:8000/login",
-   url: "http://localhost:8000/login",
+ 
+   url: "http://"+window.location.hostname+":8000/login",
+  //  headers:{
+  //   "Access-Control-Allow-Headers":"Content-Type",
+  //   "Access-Control-Allow-Origin":"http://localhost:8000/login",
+  //   "Access-Control-Allow-Methods":"OPTIONS,POST,GET,",
+  //  },
     type:"POST",
     dataType: "json", 
     data: formBody,

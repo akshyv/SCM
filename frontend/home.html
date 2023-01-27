@@ -85,10 +85,14 @@
       async function checkValidity(){
         var status = false;
         await $.ajax({
-                // url:"http://backend-backend-1:8000/checkValidity",
-                url:"http://localhost:8000/checkValidity",
+         
+                url:"http://"+window.location.hostname+":8000/checkValidity",
                 type:"GET",
-                headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token')},
+                headers: {"Authorization": 'Bearer ' + localStorage.getItem('access_token'),
+            //     "Access-Control-Allow-Headers":"Content-Type",
+            // "Access-Control-Allow-Origin":"http://localhost:8000/checkValidity",
+            // "Access-Control-Allow-Methods":"OPTIONS,POST,GET,"
+          },
                 success:function(data) {
                   status = data
                 },
@@ -102,28 +106,29 @@
         async function shipment_redirect() {          
                 console.log("redirect trigered")
                 var token = await checkValidity().then((result)=>{
-                  // window.location.href = "http://backend-frontend-1:5501/shipment.html"
-                  window.location.href = "http://127.0.0.1:5501/shipment.html"
+          
+                  window.location.href = "http://localhost:5501/shipment.html"
                 }).catch((error)=>{
-                  // window.location.href = "http://backend-frontend-1:5501"       
-                  window.location.href = "http://127.0.0.1:5501"       
+            
+                  window.location.href = "http://localhost:5501"       
                 })
             }
         async function data_redirect() {
           var token = await checkValidity().then((result)=>{
-            // window.location.href = "http://backend-frontend-1:5501/deviceData.html"
-            window.location.href = "http://127.0.0.1:5501/deviceData.html"
+        
+            window.location.href = "http://localhost:5501/deviceData.html"
                 }).catch((error)=>{
-                  // window.location.href = "http://backend-frontend-1:5501"
-                  window.location.href = "http://127.0.0.1:5501"      
+             
+                  window.location.href = "http://localhost:5501"      
 
                 })
         }
         function logout() {
           localStorage.removeItem("access_token")
           localStorage.removeItem("refresh_token")
-          // window.location.href = "http://backend-frontend-1:5501"
-          window.location.href = "http://127.0.0.1:5501"
+   
+
+          window.location.href = "http://localhost:5501"
         }
   </script>
     </body>
