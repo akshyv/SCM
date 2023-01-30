@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+  <head>
+    <title>DeviceData</title>
+    <link rel="stylesheet" href="../static/css/deviceData.css">
+
+  </head>
+  
+  <body>
+    <h2>Data from Kafka</h2>
+    <div class="button">
+    <button onclick="getTransportData(this)">Click here to view data</button>
+    </div>
+<div class="container">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Battery Level</th>
+        <th>Device Id</th>
+        <th>First_Sensor temperature</th>
+        <th>Route From</th>
+        <th>Route To</th>
+      </tr>
+    </thead>
+    <tbody id="data">
+    </tbody>
+  </table>
+</div>
+<script src="../static/js/devicedata.js"></script>
+</body>
+</html>

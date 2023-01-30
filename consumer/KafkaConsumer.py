@@ -6,15 +6,19 @@ from pydantic import BaseModel
 import sys
 sys.path.append('C:\SCM\backend\app')
 import models
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 base_dir = Path(__file__).resolve().parent
 
 
-# connect(db="SCM", host="localhost", port=27017)
-connect(db="SCM", host="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
+connect(db="SCM", host=os.getenv("MongoHOST"))
 # bootstrap_servers = "backend-kafka-1:9092"
-# bootstrap_servers = 'localhost:9092'
-bootstrap_servers = "root-kafka-1:9092"
+bootstrap_servers = os.getenv("BOOTSTRAP_SERVER")
+# bootstrap_servers = "root-kafka-1:9092"
 topicName = 'transport_data'
 
 class TransportData(BaseModel):

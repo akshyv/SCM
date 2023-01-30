@@ -1,0 +1,36 @@
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+  }
+  .row.content {
+    height: 450px;
+  }
+  .sidenav {
+    padding-top: 20px;
+    background-color: #f1f1f1;
+    height: 100%;
+  }
+  footer {
+    background-color: #555;
+    color: white;
+    padding: 15px;
+  }
+
+  /* On small screens, set height to 'auto' for sidenav and grid */
+  @media screen and (max-width: 767px) {
+    .sidenav {
+      height: 100%;
+      padding: 15px;
+    }
+    .row.content {
+      height: auto;
+    }
+  }
+
+  body {
+    background-image: url("https://images.unsplash.com/photo-1585713181935-d5f622cc2415?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2FyZ298ZW58MHx8MHx8&w=1000&q=80");
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+  }

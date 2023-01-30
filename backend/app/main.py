@@ -3,7 +3,6 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Union, Any
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
 from mongoengine import Document, StringField, IntField, DateField, DynamicDocument
 from mongoengine import connect
 from mongoengine.queryset.visitor import Q
@@ -14,15 +13,13 @@ from jose import jwt
 import json
 import os
 from dotenv import load_dotenv
-import ssl
 
 
 load_dotenv()
 
 app = FastAPI()
-# connect(db="SCM", host="localhost", port=27017)
-client = connect(db="SCM", host="mongodb+srv://admin:F24850346c!@cluster0.r9xezko.mongodb.net/?retryWrites=true&w=majority")
-print("jhjghjgughjghjb", client)
+client = connect(db="SCM", host=os.getenv("MongoHOST"))
+
 origins = ["*"]
 
 app.add_middleware(
@@ -107,9 +104,6 @@ def verify_password(password, hashed_pass):
     return pwd_context.verify(password, hashed_pass)
 
 
-@app.post("/hello", status_code=200)
-def hello(new_user: str = "default"):
-    return new_user
 
 @app.post("/sign_up", status_code=201)
 def sign_up(new_user: NewUser):
@@ -144,6 +138,8 @@ REFRESH_TOKEN_EXPIRE_MINUTES = os.getenv('REFRESH_TOKEN_EXPIRE_MINUTES')  # 7 da
 ALGORITHM = os.getenv('ALGORITHM')
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 JWT_REFRESH_SECRET_KEY = os.getenv('JWT_REFRESH_SECRET_KEY')
+token = "Token expired"
+validation = "Could not validate credentials"
 
 def create_access_token(subject: Union[str, Any], expires_delta: int = None) -> str:
     if expires_delta is not None:
@@ -207,13 +203,13 @@ def get_current_user(token: str = Depends(reuseable_oauth)):
         if datetime.fromtimestamp(payload['exp']) < datetime.now():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired",
+                detail=token,
                 headers={"WWW-Authenticate": "Bearer"},
             )
     except(jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
+            detail=validation,
             headers={"WWW-Authenticate": "Bearer"},
         )
     user: Union[dict[str, Any], None] = json.loads(User.objects.filter(
@@ -226,9 +222,6 @@ def get_user(token: str = Depends(reuseable_oauth)):
     user = get_current_user(token) 
     return user   
 
-
-# print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', get_current_user(
-#     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzI0NzQwMTUsInN1YiI6Ik1hbm8ifQ.7EefwFkkcQgppuWhg94zEK6ha02XOVYtw4SVZVMRmtE"))
 
 @app.post("/add_shipment", status_code=201)
 def add_shipment(shipment: NewShipment, token: str = Depends(oauth2_scheme)):
@@ -244,13 +237,13 @@ def add_shipment(shipment: NewShipment, token: str = Depends(oauth2_scheme)):
         if datetime.fromtimestamp(payload['exp']) < datetime.now():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired",
+                detail=token,
                 headers={"WWW-Authenticate": "Bearer"},
             )
     except(jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
+            detail=validation,
             headers={"WWW-Authenticate": "Bearer"},
         )
         
@@ -275,7 +268,7 @@ def add_shipment(shipment: NewShipment, token: str = Depends(oauth2_scheme)):
 
 @app.get("/deviceData")
 def get_device_data(token: str = Depends(reuseable_oauth)):
-    shipment_list = []
+    
     try:
         payload = jwt.decode(
             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
@@ -286,13 +279,13 @@ def get_device_data(token: str = Depends(reuseable_oauth)):
         if datetime.fromtimestamp(payload['exp']) < datetime.now():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired",
+                detail=token,
                 headers={"WWW-Authenticate": "Bearer"},
             )
     except(jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
+            detail=validation,
             headers={"WWW-Authenticate": "Bearer"},
         )      
     TransportData = Transport_data.objects().to_json()
@@ -300,8 +293,8 @@ def get_device_data(token: str = Depends(reuseable_oauth)):
     return(TransportData_list)
 
 @app.get("/checkValidity")
-def validityCheck(token: str = Depends(reuseable_oauth)):
-    shipment_list = []
+def validity_check(token: str = Depends(reuseable_oauth)):
+    
     try:
         payload = jwt.decode(
             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
@@ -312,13 +305,13 @@ def validityCheck(token: str = Depends(reuseable_oauth)):
         if datetime.fromtimestamp(payload['exp']) < datetime.now():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired",
+                detail=token,
                 headers={"WWW-Authenticate": "Bearer"},
             )
     except(jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
+            detail=validation,
             headers={"WWW-Authenticate": "Bearer"},
         )
     return True  

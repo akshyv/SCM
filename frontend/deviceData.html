@@ -10,8 +10,6 @@
       }
     </style>
   </head>
-  <!-- <head><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script></head> -->
-
   <body>
     <h2>Data from Kafka</h2>
     <div class="button">
@@ -36,11 +34,9 @@
   function getTransportData(x) {
     x.style.display = 'none';
     var token = localStorage.getItem("access_token");
-                if(token == undefined){
-                  
-                    window.location.href = "http://localhost:5501"
-                }else{ 
-  
+                if(token == undefined){                  
+                    window.location.href = "http://"+window.location.hostname+":5501"
+                }else{   
   fetch("http://"+window.location.hostname+":8000/deviceData", {
     method:'GET',
     headers: {

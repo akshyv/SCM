@@ -1,8 +1,8 @@
 function authorization() {
     let userName = document.querySelector("#username").value
     let passWord = document.querySelector("#password").value
-    var data = new URLSearchParams();
-    var details = {
+    let data = new URLSearchParams();
+    let details = {
 'username': userName,
 'password': passWord,
 };
@@ -18,22 +18,16 @@ formBody = formBody.join("&");
     $.ajax({
  
    url: "http://"+window.location.hostname+":8000/login",
-  //  headers:{
-  //   "Access-Control-Allow-Headers":"Content-Type",
-  //   "Access-Control-Allow-Origin":"http://localhost:8000/login",
-  //   "Access-Control-Allow-Methods":"OPTIONS,POST,GET,",
-  //  },
     type:"POST",
     dataType: "json", 
     data: formBody,
     success:function(data) {
         localStorage.setItem("access_token", data.access_token),
         localStorage.setItem("refresh_token", data.refresh_token)
-        window.location.href = "home.html"       
+        window.location.href = "views/home.html";       
     },
     error: function (xhr, ajaxOptions, thrownError) {
-        alert("Username or Password mismatched");
-        // alert(thrownError);
+        alert("Username or Password mismatched");        
     }
     });
 }

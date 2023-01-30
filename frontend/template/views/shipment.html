@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<head>
+    <title>Shipment</title>
+    <link rel="stylesheet" href="../static/css/shipment.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard-form input-form">
+        <h2>Create New Shipment</h2>
+
+        <div class="form-input">
+            <label for="invoice-no">Shipment/Invoice No :</label>
+            <input type="text" id="invoice_no">
+        </div>
+        <div class="form-input">
+            <label for="container-no">Container No :</label>
+            <input type="text" id="container_no">
+        </div>
+        <div class="form-input">
+            <label for="shipment-description">Shipment Description :</label>
+            <input type="text" id="shipment_description">
+        </div>
+        <div class="form-input">
+            <label for="route-details">Route Details :</label>
+            <input type="text" id="route_details">
+        </div>
+        <div class="form-input">
+            <label for="goods-type">Goods Type :</label>
+            <input type="text" id="goods_type">
+        </div>
+        <div class="form-input">
+            <label for="device">Device :</label>
+            <input type="text" id="device">
+        </div>
+        <div class="form-input">
+            <label for="expected-delivery-date">Expected Delivery Date :</label>
+            <input type="date" id="expected_delivery_date">
+        </div>
+
+        <div class="form-input">
+            <label for="po-no">PO Number :</label>
+            <input type="text" id="po_no">
+        </div>
+        <div class="form-input">
+            <label for="delivery-no">Delivery Number :</label>
+            <input type="text" id="delivery_no">
+        </div>
+        <div class="form-input">
+            <label for="ndc-no">NDC Number :</label>
+            <input type="text" id="ndc_no">
+        </div>
+        <div class="form-input">
+            <label for="batch-id">Batch Id :</label>
+            <input type="number" id="batch_id">
+        </div>
+        <div class="form-input">
+            <label for="serial-no">Serial number of Goods :</label>
+            <input type="number" id="serial_no">
+        </div>
+        <div class="form-input">
+            <button id="sub-btn" onclick="createShipment()">Submit Details</button>
+        </div>
+    </div>
+    <script src="../static/js/createShipment.js"></script>
+</body>
+
+</html>
