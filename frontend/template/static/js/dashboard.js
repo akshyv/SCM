@@ -1,4 +1,4 @@
-async function get_user(){                      
+async function get_user(){
 }
 async function checkValidity(){
   var status = false;

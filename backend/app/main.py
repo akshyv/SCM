@@ -51,7 +51,7 @@ class Shipments(Document):
     Serial_no_of_goods = IntField()
     
     
-class Transport_data(DynamicDocument):
+class DeviceData(DynamicDocument):
     Battery_Level = IntField()
     Device_Id = IntField()
     First_Sensor_temperature = IntField()
@@ -288,9 +288,9 @@ def get_device_data(token: str = Depends(reuseable_oauth)):
             detail=validation,
             headers={"WWW-Authenticate": "Bearer"},
         )      
-    TransportData = Transport_data.objects().to_json()
-    TransportData_list = json.loads(TransportData)
-    return(TransportData_list)
+    DeviceData = DeviceData.objects().to_json()
+    DeviceData_list = json.loads(DeviceData)
+    return(DeviceData_list)
 
 @app.get("/checkValidity")
 def validity_check(token: str = Depends(reuseable_oauth)):

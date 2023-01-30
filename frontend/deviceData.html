@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <title>deviceData</title>
     <link rel="stylesheet" href="./template/static/css/deviceData.css">
     <style>
       table,
@@ -13,7 +14,7 @@
   <body>
     <h2>Data from Kafka</h2>
     <div class="button">
-    <button onclick="getTransportData(this)">Click here to view data</button>
+    <button onclick="getDeviceData(this)">Click here to view data</button>
     </div>
 <div class="container">
   <table class="styled-table">
@@ -31,7 +32,7 @@
   </table>
 </div>
 <script>
-  function getTransportData(x) {
+  function getDeviceData(x) {
     x.style.display = 'none';
     var token = localStorage.getItem("access_token");
                 if(token == undefined){                  

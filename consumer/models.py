@@ -1,9 +1,5 @@
 from mongoengine import Document, StringField, IntField, DateField, DynamicDocument
 
-# class Employee(Document):
-#     name = StringField(max_length=100)
-#     email = StringField()
-#     emp_id = IntField()
     
 class User(Document):
     username = StringField(max_length=100)
@@ -25,7 +21,7 @@ class Shipments(Document):
     Serial_no_of_goods = IntField()
     
     
-class Transport_data(DynamicDocument):
+class DeviceData(DynamicDocument):
     Battery_Level = IntField()
     Device_Id = IntField()
     First_Sensor_temperature = IntField()

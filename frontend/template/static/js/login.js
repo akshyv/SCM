@@ -22,7 +22,7 @@ formBody = formBody.join("&");
     dataType: "json", 
     data: formBody,
     success:function(data) {
-        localStorage.setItem("access_token", data.access_token),
+        localStorage.setItem("access_token", data.access_token)
         localStorage.setItem("refresh_token", data.refresh_token)
         window.location.href = "views/home.html";       
     },

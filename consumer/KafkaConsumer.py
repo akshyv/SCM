@@ -8,6 +8,7 @@ sys.path.append('C:\SCM\backend\app')
 import models
 import os
 from dotenv import load_dotenv
+import config
 
 
 load_dotenv()
@@ -15,13 +16,11 @@ load_dotenv()
 base_dir = Path(__file__).resolve().parent
 
 
-connect(db="SCM", host=os.getenv("MongoHOST"))
-# bootstrap_servers = "backend-kafka-1:9092"
-bootstrap_servers = os.getenv("BOOTSTRAP_SERVER")
-# bootstrap_servers = "root-kafka-1:9092"
-topicName = 'transport_data'
+connect(db="SCM", host= config.HOST)
+bootstrap_servers = config.BOOTSTRAP_SERVER
+topicName = 'device_data'
 
-class TransportData(BaseModel):
+class DeviceData(BaseModel):
         Battery_Level: int
         Device_Id: int
         First_Sensor_temperature: int
@@ -32,7 +31,7 @@ try:
     consumer = KafkaConsumer(topicName,bootstrap_servers = bootstrap_servers,auto_offset_reset = 'earliest')
     for data in consumer:
         data = json.loads(data.value)
-        Transport_Data = models.Transport_data(
+        Transport_Data = models.DeviceData(
             Battery_Level = data['Battery_Level'],
             Device_Id = data['Device_Id'],
             First_Sensor_temperature = data['First_Sensor_temperature'],

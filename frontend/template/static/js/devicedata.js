@@ -1,4 +1,4 @@
-function getTransportData(x) {
+function getDeviceData(x) {
     x.style.display = 'none';
     var token = localStorage.getItem("access_token");
                 if(token == undefined){
